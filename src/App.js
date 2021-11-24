@@ -35,42 +35,94 @@ import { useEffect } from "react/cjs/react.development";
 // }
 
 //2. Coin Tracker
+// function App() {
+//   const [loading, setLoading] = useState(true);
+//   const [coins, setCoins] = useState([]);
+//   const [money, setMoney] = useState(0);
+
+//   const onChange = (event) => setMoney(event.target.value);
+
+//   useEffect(() => {
+//     fetch("https://api.coinpaprika.com/v1/tickers")
+//       .then((response) => response.json())
+//       .then((json) => {
+//         setCoins(json);
+//         setLoading(false);
+//       });
+//   }, []);
+
+//   return (
+//     <div>
+//       <h1>The Coins! ({coins.length})</h1>
+//       {loading ? <strong>Loading...</strong> : null}
+//       <input
+//         type="text"
+//         placeholder="How much do you have?"
+//         onChange={onChange}
+//       />{" "}
+//       USD
+//       <ul>
+//         {coins.map((coin, index) => (
+//           <li key={index}>
+//             {coin.name} ({coin.symbol}): ${coin.quotes.USD.price} USD{" "}
+//             {money > 0
+//               ? `= ${money / coin.quotes.USD.price} ${coin.symbol}`
+//               : null}
+//           </li>
+//         ))}
+//       </ul>
+//     </div>
+//   );
+// }
+
+//3. Movie app
 function App() {
   const [loading, setLoading] = useState(true);
-  const [coins, setCoins] = useState([]);
-  const [money, setMoney] = useState(0);
+  const [movies, setMovies] = useState([]);
 
-  const onChange = (event) => setMoney(event.target.value);
-
+  const getMovies = async () => {
+    const response = await fetch(
+      `https://yts.mx/api/v2/list_movies.json?minimum_rate=9.9&sort_by=year`
+    );
+    const json = await response.json();
+    setMovies(json.data.movies);
+    setLoading(false);
+  };
   useEffect(() => {
-    fetch("https://api.coinpaprika.com/v1/tickers")
-      .then((response) => response.json())
-      .then((json) => {
-        setCoins(json);
-        setLoading(false);
-      });
+    getMovies();
   }, []);
 
+  // useEffect(() => {
+  //   fetch(
+  //     `https://yts.mx/api/v2/list_movies.json?minimum_rating=8.0&sort_by=year`
+  //   )
+  //     .then((response) => response.json())
+  //     .then((json) => {
+  //       setMovies(json.data.movies);
+  //       setLoading(false);
+  //     });
+  // }, []);
+  console.log(movies);
   return (
     <div>
-      <h1>The Coins! ({coins.length})</h1>
-      {loading ? <strong>Loading...</strong> : null}
-      <input
-        type="text"
-        placeholder="How much do you have?"
-        onChange={onChange}
-      />{" "}
-      USD
-      <ul>
-        {coins.map((coin, index) => (
-          <li key={index}>
-            {coin.name} ({coin.symbol}): ${coin.quotes.USD.price} USD{" "}
-            {money > 0
-              ? `= ${money / coin.quotes.USD.price} ${coin.symbol}`
-              : null}
-          </li>
-        ))}
-      </ul>
+      {loading ? (
+        <h1>Loading...</h1>
+      ) : (
+        <div>
+          {movies.map((movie) => (
+            <div key={movie.id}>
+              <img src={movie.medium_cover_image} />
+              <h2>{movie.title}</h2>
+              <p>{movie.summary}</p>
+              <ul>
+                {movie.genres.map((genre) => (
+                  <li key={genre}>{genre}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
