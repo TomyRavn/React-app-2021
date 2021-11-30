@@ -8,12 +8,11 @@ function Detail() {
       await fetch(`https://yts.mx/api/v2/movie_details.json?movie_id=${id}`)
     ).json();
     console.log(json);
-    return json;
   };
 
   useEffect(() => {
     getMovie();
-  }, []);
+  });
   return <h1>Detail</h1>;
 }
 export default Detail;
